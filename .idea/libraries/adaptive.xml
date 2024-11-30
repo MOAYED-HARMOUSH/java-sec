@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="adaptive">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/adaptive" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/alwaysencrypted" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/azureactivedirectoryauthentication" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/connections" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/constrained" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/dataclassification" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/datatypes" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/resultsets" />
+      <root url="file://$USER_HOME$/Desktop/sqljdbc_12.8.1.0_enu/sqljdbc_12.8/enu/samples/sparse" />
+    </SOURCES>
+  </library>
+</component>
