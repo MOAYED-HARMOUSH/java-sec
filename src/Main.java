@@ -1,39 +1,29 @@
+
+import Atm.service.UserService;
 import java.util.Scanner;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        // URL الخاص بالاتصال بـ SQL Server
-        String url = "jdbc:sqlserver://localhost:3000;databaseName=atm_simulation;integratedSecurity=true;encrypt=true;trustServerCertificate=true";
+        Scanner scanner = new Scanner(System.in);
 
-        // استعلام SQL لاستخراج البيانات
-        String query = "SELECT TOP (1000) [user_id], [username], [encrypted_password], [encrypted_balance] " +
-                "FROM [atm_simulation].[dbo].[users]";
+        System.out.println("Welcome to the ATM Simulation!");
 
-        try (Connection connection = DriverManager.getConnection(url);
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+         System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
 
-            // عرض النتائج
-            System.out.println("user_id\tusername\t\tencrypted_password\tencrypted_balance");
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
 
-            while (resultSet.next()) {
-                int userId = resultSet.getInt("user_id");
-                String username = resultSet.getString("username");
-                String encryptedPassword = resultSet.getString("encrypted_password");
-                String encryptedBalance = resultSet.getString("encrypted_balance");
+        UserService userService = new UserService();
+        boolean isAuthenticated = userService.authenticate(username, password);
 
-                // طباعة كل سجل
-                System.out.println(userId + "\t" + username + "\t" + encryptedPassword + "\t" + encryptedBalance);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (isAuthenticated) {
+            System.out.println("Login successful! Welcome, " + username);
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
         }
-    }
 
+        scanner.close();
+    }
 }
