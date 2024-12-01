@@ -1,6 +1,7 @@
 package Atm.server;
 
 import Atm.service.Login;
+import Atm.service.LoginWithKey;
 import Atm.service.SignUP;
 
 import java.io.*;
@@ -22,6 +23,8 @@ public class ClientHandler implements Runnable {
             writer.println("Welcome to the ATM!");
             writer.println("To login, enter 1.");
             writer.println("To sign up, enter 2.");
+            writer.println("To login with key, enter 3.");
+
             writer.println("Please enter your choice: ");
 
             // قراءة اختيار المستخدم
@@ -49,6 +52,10 @@ public class ClientHandler implements Runnable {
                 case 2:
                     SignUP signUp = new SignUP();
                     signUp.signUp(writer, reader);
+                    break;
+                case 3:
+                    LoginWithKey loginWithKey = new LoginWithKey();
+                    loginWithKey.LoginWithKey(writer, reader);
                     break;
 
                 default:

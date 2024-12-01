@@ -24,6 +24,19 @@ public class UserService {
             throw new RuntimeException(e);
         }
      }
+
+    public boolean authenticateWithKey(String username, String password,String Key) {
+        try {
+            User user = userDao.getUserByUsernameAndPasswordAndKey(username, password,Key);
+            return user != null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean signUp(String username, String password,String balane) {
         try {
             return userDao.addUser(username, password,balane);

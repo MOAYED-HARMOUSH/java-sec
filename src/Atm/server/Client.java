@@ -25,7 +25,7 @@ public class Client {
             // متابعة العملية بناءً على اختيار المستخدم
             while ((serverMessage = reader.readLine()) != null) {
                 System.out.println(serverMessage);
-                if (serverMessage.contains("Enter your username:") || serverMessage.contains("Enter your password:") || serverMessage.contains("Enter your balance:")) {
+                if (serverMessage.contains("Enter your username:") || serverMessage.contains("Enter your password:")|| serverMessage.contains("Enter your Key:") || serverMessage.contains("Enter your balance:")) {
                     String input = consoleReader.readLine(); // إدخال المستخدم
                     writer.println(input); // إرسال الإدخال للسيرفر
                 }

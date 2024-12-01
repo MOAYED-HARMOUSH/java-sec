@@ -13,7 +13,12 @@ public class AESEncryptionUtil {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         return cipher.doFinal(data.getBytes());
     }
-
+    public static byte[] encryptByExternalKey(String data,String ExternalKey) throws Exception {
+        SecretKeySpec secretKey = new SecretKeySpec(ExternalKey.getBytes(), ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        return cipher.doFinal(data.getBytes());
+    }
     public static String decrypt(byte[] encryptedData) throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(KEY, ALGORITHM);
         Cipher cipher = Cipher.getInstance(ALGORITHM);
