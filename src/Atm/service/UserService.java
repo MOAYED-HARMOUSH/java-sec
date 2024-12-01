@@ -13,13 +13,13 @@ public class UserService {
         this.userDao = new UserDao();
     }
 
-     public boolean authenticate(String username, String password) {
+     public User authenticate(String username, String password) {
         try {
              User user = userDao.getUserByUsernameAndPassword(username, password);
-            return user != null;
+            return user ;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -47,4 +47,14 @@ public class UserService {
             throw new RuntimeException(e);
         }
     }
+//    public int getUserIdByUsername(String username) {
+//        try {
+//            return userDao.getUserIdByUsername(username);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return 0;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

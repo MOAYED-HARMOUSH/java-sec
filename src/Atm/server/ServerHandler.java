@@ -2,15 +2,16 @@ package Atm.server;
 
 import Atm.service.Login;
 import Atm.service.LoginWithKey;
+import Atm.service.RequestBalance;
 import Atm.service.SignUP;
 
 import java.io.*;
 import java.net.Socket;
 
-public class ClientHandler implements Runnable {
+public class ServerHandler implements Runnable {
     private Socket clientSocket;
 
-    public ClientHandler(Socket socket) {
+    public ServerHandler(Socket socket) {
         this.clientSocket = socket;
     }
 
@@ -24,6 +25,7 @@ public class ClientHandler implements Runnable {
             writer.println("To login, enter 1.");
             writer.println("To sign up, enter 2.");
             writer.println("To login with key, enter 3.");
+            writer.println("To Get Your Balance enter 4.");
 
             writer.println("Please enter your choice: ");
 
@@ -58,6 +60,11 @@ public class ClientHandler implements Runnable {
                     loginWithKey.LoginWithKey(writer, reader);
                     break;
 
+                case 4:
+                    RequestBalance requestBalance = new RequestBalance();
+                    requestBalance.getBalance(writer, reader);
+                    break;
+
                 default:
                     writer.println("Invalid choice. Please restart and try again.");
                     break;
@@ -65,6 +72,8 @@ public class ClientHandler implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 clientSocket.close();

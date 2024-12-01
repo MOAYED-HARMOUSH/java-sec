@@ -2,42 +2,75 @@ package Atm.server;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 
 public class Client {
+    private static PublicKey serverPublicKey; // تخزين المفتاح العام للسيرفر هنا
+
     public static void main(String[] args) {
         try (Socket socket = new Socket("localhost", 3000);
              BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
 
-             String serverMessage;
+            String serverMessage;
             while ((serverMessage = reader.readLine()) != null) {
-                System.out.println(serverMessage); // طباعة الرسالة من السيرفر
+                System.out.println(serverMessage);
                 if (serverMessage.contains("Please enter your choice")) {
-                    break; // إذا طلب إدخال خيار، نخرج من الحلقة
+                    break;
                 }
             }
 
-            // إدخال اختيار المستخدم (1 أو 2)
             String choice = consoleReader.readLine();
-            writer.println(choice); // إرسال الاختيار للسيرفر
+            writer.println(choice);
 
-            // متابعة العملية بناءً على اختيار المستخدم
             while ((serverMessage = reader.readLine()) != null) {
                 System.out.println(serverMessage);
-                if (serverMessage.contains("Enter your username:") || serverMessage.contains("Enter your password:")|| serverMessage.contains("Enter your Key:") || serverMessage.contains("Enter your balance:")) {
-                    String input = consoleReader.readLine(); // إدخال المستخدم
-                    writer.println(input); // إرسال الإدخال للسيرفر
+
+                // التحقق من وجود المفتاح العام للسيرفر
+
+                if (serverMessage.contains("Enter your username:") || serverMessage.contains("Enter your password:") ||
+                        serverMessage.contains("Enter your Key:") || serverMessage.contains("Enter your balance:") ||
+                        serverMessage.contains("Enter your sessionID: ")) {
+                    String input = consoleReader.readLine();
+                    writer.println(input);
                 }
+
+
+                if (serverMessage.contains("Server Public Key:")) {
+                    String publicKeyString = serverMessage.split(":")[1].trim(); // استخراج المفتاح العام من الرسالة
+                    // إزالة أي شيء غير ضروري في السلسلة قبل فك الترميز
+                    if (publicKeyString.startsWith("-----BEGIN PUBLIC KEY-----")) {
+                        publicKeyString = publicKeyString.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "");
+                    }
+                    serverPublicKey = convertStringToPublicKey(publicKeyString); // تحويل المفتاح من String إلى PublicKey
+                }
+
                 if (serverMessage.contains("successful") || serverMessage.contains("Invalid")) {
-               //12     String input = consoleReader.readLine(); // إدخال المستخدم
-                  //  System.out.println(serverMessage);
-                    break; // إنهاء بعد ظهور نتيجة العملية
+                    break;
                 }
+
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // دالة لتحويل المفتاح العام من String إلى PublicKey
+    private static PublicKey convertStringToPublicKey(String publicKeyString) {
+        try {
+            // هنا نقوم بتحويل المفتاح باستخدام Base64 أو طريقة معتمدة
+            // هذه العملية تعتمد على كيفية إرسال المفتاح، إن كان مشفرًا باستخدام Base64 أو غيره
+            // كمثال:
+            byte[] encodedKey = java.util.Base64.getDecoder().decode(publicKeyString); // فك ترميز Base64
+            java.security.KeyFactory keyFactory = java.security.KeyFactory.getInstance("RSA");
+            java.security.spec.X509EncodedKeySpec keySpec = new java.security.spec.X509EncodedKeySpec(encodedKey);
+            return keyFactory.generatePublic(keySpec);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

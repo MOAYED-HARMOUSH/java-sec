@@ -1,4 +1,5 @@
 
+import Atm.model.User;
 import Atm.service.UserService;
 import java.util.Scanner;
 
@@ -16,9 +17,9 @@ public class Main {
         String password = scanner.nextLine();
 
         UserService userService = new UserService();
-        boolean isAuthenticated = userService.authenticate(username, password);
+        User isAuthenticated = userService.authenticate(username, password);
 
-        if (isAuthenticated) {
+        if (isAuthenticated.getUserId()!=0) {
             System.out.println("Login successful! Welcome, " + username);
         } else {
             System.out.println("Invalid username or password. Please try again.");

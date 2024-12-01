@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.Arrays;
 
 public class UserDao {
+    private User user;
 
     public User getUserByUsernameAndPassword(String username, String password) throws Exception {
         String query = "SELECT * FROM users WHERE username = ?";
@@ -88,4 +89,15 @@ public class UserDao {
             return false;
         }
     }
+
+//    public int getUserIdByUsername(String username) {
+//        try {
+//            return user.getUserId(username);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return 0;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

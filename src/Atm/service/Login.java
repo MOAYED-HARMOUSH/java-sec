@@ -1,11 +1,16 @@
 package Atm.service;
 
+import Atm.model.Keys;
+import Atm.model.User;
+import Atm.session.SessionManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.PublicKey;
 
 public class Login {
-    public void login(PrintWriter writer, BufferedReader reader) throws IOException {
+    public void login(PrintWriter writer, BufferedReader reader) throws Exception {
         String username, password;
 
         writer.println("Enter your username: ");
@@ -23,11 +28,21 @@ public class Login {
         }
 
         UserService userService = new UserService();
-        boolean isAuthenticated = userService.authenticate(username, password);
+        User isAuthenticated = userService.authenticate(username, password);
 
-        if (isAuthenticated) {
-            writer.println("Login successful! Welcome, " + username);
-            System.out.println("User logged in: " + username);
+        if (isAuthenticated.getUserId()!=0) {
+            int userId = isAuthenticated.getUserId(); // استرجاع معرف المستخدم
+            String sessionId = SessionManager.createSession(userId);
+            KeyManager keysGenerate =new KeyManager();
+            Keys[] keys = keysGenerate.generateKeys();
+
+            // إرسال المفتاح العام للسيرفر إلى العميل
+            PublicKey serverPublicKey = keys[0].getPublicKey();
+            String base64PublicKey = java.util.Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
+            writer.println("Server Public Key: " + base64PublicKey); // إرسال المفتاح العام بصيغة Base64
+            writer.println("Login successful! Your session ID is: " + sessionId +" userID ="+userId);
+
+             System.out.println("User logged in: " + username);
         } else {
             writer.println("Invalid username or password. Please try again.");
         }
