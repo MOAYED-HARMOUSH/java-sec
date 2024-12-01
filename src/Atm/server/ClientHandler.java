@@ -1,6 +1,7 @@
 package Atm.server;
 
-import Atm.service.UserService;
+import Atm.service.Login;
+import Atm.service.SignUP;
 
 import java.io.*;
 import java.net.Socket;
@@ -17,34 +18,49 @@ public class ClientHandler implements Runnable {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
-             String username = null, password = null;
+            // إرسال رسالة الاختيار إلى العميل
+            writer.println("Welcome to the ATM!");
+            writer.println("To login, enter 1.");
+            writer.println("To sign up, enter 2.");
+            writer.println("Please enter your choice: ");
 
-            writer.println("Welcome to the ATM Simulation!");
+            // قراءة اختيار المستخدم
+            String choiceInput = reader.readLine();
+            if (choiceInput == null) {
+                writer.println("Invalid input. Connection closing.");
+                return;
+            }
 
-            writer.println("Enter your username: ");
-            username = reader.readLine();
-            System.out.println("Received from client: " + username);
+            int choice;
+            try {
+                choice = Integer.parseInt(choiceInput);
+            } catch (NumberFormatException e) {
+                writer.println("Invalid choice. Please enter a valid number.");
+                return;
+            }
 
-            writer.println("Enter your password: ");
-            password = reader.readLine();
-            System.out.println("Received from client: " + password);
+            // تنفيذ العملية بناءً على اختيار المستخدم
+            switch (choice) {
+                case 1:
+                    Login userLogin = new Login();
+                    userLogin.login(writer, reader);
+                    break;
 
-            UserService userService = new UserService();
-            boolean isAuthenticated = userService.authenticate(username, password);
+                case 2:
+                    SignUP signUp = new SignUP();
+                    signUp.signUp(writer, reader);
+                    break;
 
-            if (isAuthenticated) {
-                System.out.println("Login successful! Welcome, " + username);
-                writer.println("Login successful! Welcome, " + username);
-            } else {
-                System.out.println("Invalid username or password. Please try again.");
-                writer.println("Invalid username or password. Please try again.");
+                default:
+                    writer.println("Invalid choice. Please restart and try again.");
+                    break;
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                clientSocket.close();  // إغلاق الاتصال بعد الانتهاء
+                clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

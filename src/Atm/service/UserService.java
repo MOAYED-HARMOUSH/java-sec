@@ -20,6 +20,18 @@ public class UserService {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+     }
+    public boolean signUp(String username, String password,String balane) {
+        try {
+            return userDao.addUser(username, password,balane);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
