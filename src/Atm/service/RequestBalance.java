@@ -23,7 +23,7 @@ public class RequestBalance {
             System.out.println("userId after check session"+userId);
         if (userId != null) {
             // الجلسة صالحة
-            writer.println("Login successful Now you will get your balance" );
+            writer.println("session successful Now you will get your balance" );
 
         } else {
             writer.println("Invalid session. Please log in first.");

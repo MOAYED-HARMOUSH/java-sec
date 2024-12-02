@@ -1,5 +1,9 @@
 package Atm.server;
 
+import Atm.model.Keys;
+import Atm.service.KeyManager;
+import Atm.utils.RSAEncryptionUtil;
+
 import java.io.*;
 import java.net.Socket;
 import java.security.PublicKey;
@@ -14,16 +18,37 @@ public class Client {
              PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))) {
 
+
+            KeyManager keysGenerate =new KeyManager();
+            Keys[] keys = keysGenerate.generateClientKeys();
+
+
+            PublicKey clientPublicKey = keys[0].getPublicKey();
+            String base64PublicKey = java.util.Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
+            writer.println(base64PublicKey);
+
+
             String serverMessage;
+
             while ((serverMessage = reader.readLine()) != null) {
                 System.out.println(serverMessage);
+                if (serverMessage.contains("Server Public Key:")) {
+                    String publicKeyString = serverMessage.split(":")[1].trim(); // استخراج المفتاح العام من الرسالة
+                    if (publicKeyString.startsWith("-----BEGIN PUBLIC KEY-----")) {
+                        publicKeyString = publicKeyString.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "");
+                    }
+                    serverPublicKey = convertStringToPublicKey(publicKeyString); // تحويل المفتاح من String إلى PublicKey
+                }
                 if (serverMessage.contains("Please enter your choice")) {
                     break;
                 }
             }
 
             String choice = consoleReader.readLine();
-            writer.println(choice);
+            byte[] encryptedChoice = RSAEncryptionUtil.encryptData(choice.getBytes(), serverPublicKey);
+            writer.println(java.util.Base64.getEncoder().encodeToString(encryptedChoice));
+
+            //writer.println(choice);
 
             while ((serverMessage = reader.readLine()) != null) {
                 System.out.println(serverMessage);
@@ -38,14 +63,7 @@ public class Client {
                 }
 
 
-                if (serverMessage.contains("Server Public Key:")) {
-                    String publicKeyString = serverMessage.split(":")[1].trim(); // استخراج المفتاح العام من الرسالة
-                    // إزالة أي شيء غير ضروري في السلسلة قبل فك الترميز
-                    if (publicKeyString.startsWith("-----BEGIN PUBLIC KEY-----")) {
-                        publicKeyString = publicKeyString.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "");
-                    }
-                    serverPublicKey = convertStringToPublicKey(publicKeyString); // تحويل المفتاح من String إلى PublicKey
-                }
+
 
                 if (serverMessage.contains("successful") || serverMessage.contains("Invalid")) {
                     break;
@@ -55,6 +73,8 @@ public class Client {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

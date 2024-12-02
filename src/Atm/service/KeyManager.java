@@ -17,28 +17,31 @@ public class KeyManager {
     }
 
     // دالة لتوليد المفاتيح
-    public Keys[] generateKeys() throws Exception {
+    public Keys[] generateServerKeys() throws Exception {
 
-        // توليد المفاتيح للسيرفر
         KeyPair serverKeyPair = generateKeyPair();
         PublicKey serverPublicKey = serverKeyPair.getPublic();
         PrivateKey serverPrivateKey = serverKeyPair.getPrivate();
 
-        // توليد المفاتيح للعميل
+        System.out.println("Server Public Key: " + serverPublicKey);
+        System.out.println("Server Private Key: " + serverPrivateKey);
+
+        Keys serverKeys = new Keys(serverPublicKey, serverPrivateKey);
+        return new Keys[] { serverKeys };
+    }
+
+    public Keys[] generateClientKeys() throws Exception {
         KeyPair clientKeyPair = generateKeyPair();
         PublicKey clientPublicKey = clientKeyPair.getPublic();
         PrivateKey clientPrivateKey = clientKeyPair.getPrivate();
 
-        // طباعة المفاتيح
-        System.out.println("Server Public Key: " + serverPublicKey);
-        System.out.println("Server Private Key: " + serverPrivateKey);
         System.out.println("Client Public Key: " + clientPublicKey);
         System.out.println("Client Private Key: " + clientPrivateKey);
 
-        Keys serverKeys = new Keys(serverPublicKey, serverPrivateKey);
-        Keys clientKeys = new Keys(clientPublicKey, clientPrivateKey);
-        return new Keys[] { serverKeys, clientKeys };
+         Keys clientKeys = new Keys(clientPublicKey, clientPrivateKey);
+        return new Keys[] { clientKeys };
     }
+
 
 //    public static void main(String[] args) throws Exception {
 //        KeyManager keyManager = new KeyManager();

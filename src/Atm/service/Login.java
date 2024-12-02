@@ -33,13 +33,7 @@ public class Login {
         if (isAuthenticated.getUserId()!=0) {
             int userId = isAuthenticated.getUserId(); // استرجاع معرف المستخدم
             String sessionId = SessionManager.createSession(userId);
-            KeyManager keysGenerate =new KeyManager();
-            Keys[] keys = keysGenerate.generateKeys();
 
-            // إرسال المفتاح العام للسيرفر إلى العميل
-            PublicKey serverPublicKey = keys[0].getPublicKey();
-            String base64PublicKey = java.util.Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
-            writer.println("Server Public Key: " + base64PublicKey); // إرسال المفتاح العام بصيغة Base64
             writer.println("Login successful! Your session ID is: " + sessionId +" userID ="+userId);
 
              System.out.println("User logged in: " + username);
