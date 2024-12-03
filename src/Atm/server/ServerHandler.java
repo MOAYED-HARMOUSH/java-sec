@@ -47,6 +47,7 @@ public class ServerHandler implements Runnable {
 
             // إرسال رسالة الاختيار إلى العميل
             writer.println("Welcome to the ATM!");
+
             writer.println("Server Public Key: " + base64PublicKey); // إرسال المفتاح العام بصيغة Base64
             writer.println("To login, enter 1.");
             writer.println("To sign up, enter 2.");
@@ -92,7 +93,8 @@ public class ServerHandler implements Runnable {
 
                 case 4:
                     RequestBalance requestBalance = new RequestBalance();
-                    requestBalance.getBalance(writer, reader);
+                    requestBalance.getBalance(writer, reader, GeneralclientPublicKey); // تمرير المفتاح العام للعميل
+
                     break;
 
                 default:

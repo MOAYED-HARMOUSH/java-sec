@@ -15,6 +15,7 @@ public class RSAEncryptionUtil {
 
     // دالة لفك تشفير البيانات باستخدام المفتاح الخاص
     public static String decryptData(byte[] encryptedData, PrivateKey privateKey) throws Exception {
+
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         byte[] decryptedBytes = cipher.doFinal(encryptedData);

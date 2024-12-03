@@ -6,6 +6,8 @@ import Atm.utils.AESEncryptionUtil;
 import java.sql.*;
 import java.util.Arrays;
 
+import static javax.swing.UIManager.getInt;
+
 public class UserDao {
     private User user;
 
@@ -90,14 +92,22 @@ public class UserDao {
         }
     }
 
-//    public int getUserIdByUsername(String username) {
-//        try {
-//            return user.getUserId(username);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return 0;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public int getBalance(int user_id) throws Exception {
+        String query = "SELECT encrypted_balance FROM users WHERE user_id = ?";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
+            ResultSet resultSet = statement.executeQuery();
+            System.out.println(resultSet);
+            if (resultSet.next()) {
+                byte[] encryptedBalance = resultSet.getBytes("encrypted_balance");
+                // فك تشفير الرصيد
+                String decryptedBalance = AESEncryptionUtil.decrypt(encryptedBalance);
+                return Integer.parseInt(decryptedBalance); // تحويل النص إلى رقم
+            }
+        }
+        return -1; // إذا لم يتم العثور على المستخدم أو الرصيد
+    }
+
 }

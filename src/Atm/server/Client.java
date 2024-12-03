@@ -6,8 +6,10 @@ import Atm.utils.RSAEncryptionUtil;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
 
 public class Client {
     private static PublicKey serverPublicKey; // تخزين المفتاح العام للسيرفر هنا
@@ -24,6 +26,8 @@ public class Client {
 
 
             PublicKey clientPublicKey = keys[0].getPublicKey();
+            PrivateKey clientPrivateKey = keys[0].getPrivateKey();
+
             String base64PublicKey = java.util.Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
             writer.println(base64PublicKey);
 
@@ -51,24 +55,38 @@ public class Client {
             //writer.println(choice);
 
             while ((serverMessage = reader.readLine()) != null) {
-                System.out.println(serverMessage);
 
-                // التحقق من وجود المفتاح العام للسيرفر
 
                 if (serverMessage.contains("Enter your username:") || serverMessage.contains("Enter your password:") ||
                         serverMessage.contains("Enter your Key:") || serverMessage.contains("Enter your balance:") ||
                         serverMessage.contains("Enter your sessionID: ")) {
+                     System.out.println(serverMessage);
+
                     String input = consoleReader.readLine();
+
                     writer.println(input);
+
                 }
 
 
+                if (serverMessage.contains("successful") || serverMessage.contains("Invalid")|| serverMessage.contains("Your session ID is")) {
+                    System.out.println(serverMessage);
 
-
-                if (serverMessage.contains("successful") || serverMessage.contains("Invalid")) {
                     break;
                 }
 
+                if (serverMessage.startsWith("ENC|")) {
+                    String encryptedPart = serverMessage.substring(4); // إزالة "ENC|"
+
+
+                byte[] encryptedBalanceBytes = Base64.getDecoder().decode(encryptedPart);
+
+                // فك تشفير الرصيد باستخدام المفتاح الخاص للعميل
+
+                String decryptedBalance = RSAEncryptionUtil.decryptData(encryptedBalanceBytes, clientPrivateKey);
+
+                System.out.println(decryptedBalance);
+                }
             }
 
         } catch (IOException e) {
