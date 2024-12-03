@@ -59,7 +59,7 @@ public class Client {
 
                 if (serverMessage.contains("Enter your username:") || serverMessage.contains("Enter your password:") ||
                         serverMessage.contains("Enter your Key:") || serverMessage.contains("Enter your balance:") ||
-                        serverMessage.contains("Enter your sessionID: ")) {
+                        serverMessage.contains("Enter your sessionID: ") ) {
                      System.out.println(serverMessage);
 
                     String input = consoleReader.readLine();
@@ -86,6 +86,21 @@ public class Client {
                 String decryptedBalance = RSAEncryptionUtil.decryptData(encryptedBalanceBytes, clientPrivateKey);
 
                 System.out.println(decryptedBalance);
+                }
+                if (serverMessage.startsWith("ENCForAddMoney|")) {
+                    String encryptedPart = serverMessage.substring(15); // إزالة "ENC|"
+
+
+                    byte[] encryptedBalanceBytes = Base64.getDecoder().decode(encryptedPart);
+
+
+                    String decryptedBalance = RSAEncryptionUtil.decryptData(encryptedBalanceBytes, clientPrivateKey);
+
+                    System.out.println(decryptedBalance);
+                    String money = consoleReader.readLine();
+                    byte[] Encrptedmoney = RSAEncryptionUtil.encryptData(money.getBytes(), serverPublicKey);
+                    writer.println(java.util.Base64.getEncoder().encodeToString(Encrptedmoney));
+
                 }
             }
 

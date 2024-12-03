@@ -13,6 +13,7 @@ import java.util.Base64;
 public class ServerHandler implements Runnable {
     private Socket clientSocket;
     private static PublicKey GeneralclientPublicKey; // تخزين المفتاح العام للسيرفر هنا
+    private static PrivateKey GeneralServerPrivateKey; // تخزين المفتاح العام للسيرفر هنا
 
 
     public ServerHandler(Socket socket) {
@@ -32,6 +33,13 @@ public class ServerHandler implements Runnable {
             PrivateKey serverPrivateKey = keys[0].getPrivateKey();
 
             String base64PublicKey = java.util.Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
+            String base64PrivateKey = java.util.Base64.getEncoder().encodeToString(serverPrivateKey.getEncoded());
+            String privateKeyString=base64PrivateKey;
+            if (privateKeyString.startsWith("-----BEGIN PUBLIC KEY-----")) {
+                privateKeyString = privateKeyString.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "");
+            }
+            GeneralServerPrivateKey = convertStringToPrivateKey(privateKeyString); // تحويل المفتاح من String إلى PublicKey
+
 
             String clientPublicKey = reader.readLine();
             if (clientPublicKey == null) {
@@ -53,6 +61,7 @@ public class ServerHandler implements Runnable {
             writer.println("To sign up, enter 2.");
             writer.println("To login with key, enter 3.");
             writer.println("To Get Your Balance enter 4.");
+            writer.println("To Add amount enter 5.");
 
             writer.println("Please enter your choice: ");
 
@@ -95,6 +104,10 @@ public class ServerHandler implements Runnable {
                     RequestBalance requestBalance = new RequestBalance();
                     requestBalance.getBalance(writer, reader, GeneralclientPublicKey); // تمرير المفتاح العام للعميل
 
+                case 5:
+                    AddMoney addMoney = new AddMoney();
+                    addMoney.AddMoney(writer, reader, GeneralclientPublicKey,GeneralServerPrivateKey); // تمرير المفتاح العام للعميل
+
                     break;
 
                 default:
@@ -123,6 +136,21 @@ public class ServerHandler implements Runnable {
             java.security.KeyFactory keyFactory = java.security.KeyFactory.getInstance("RSA");
             java.security.spec.X509EncodedKeySpec keySpec = new java.security.spec.X509EncodedKeySpec(encodedKey);
             return keyFactory.generatePublic(keySpec);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static PrivateKey convertStringToPrivateKey(String privateKeyString) {
+        try {
+            // هنا نقوم بتحويل المفتاح باستخدام Base64 أو طريقة معتمدة
+            // هذه العملية تعتمد على كيفية إرسال المفتاح، إن كان مشفرًا باستخدام Base64 أو غيره
+            // كمثال:
+            byte[] encodedKey = java.util.Base64.getDecoder().decode(privateKeyString); // فك ترميز Base64
+            java.security.KeyFactory keyFactory = java.security.KeyFactory.getInstance("RSA");
+            java.security.spec.X509EncodedKeySpec keySpec = new java.security.spec.X509EncodedKeySpec(encodedKey);
+            return keyFactory.generatePrivate(keySpec);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
