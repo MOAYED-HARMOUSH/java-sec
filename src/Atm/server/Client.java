@@ -103,6 +103,21 @@ public class Client {
                     writer.println(java.util.Base64.getEncoder().encodeToString(Encrptedmoney));
 
                 }
+                if (serverMessage.startsWith("ENCForpulMoney|")) {
+                    String encryptedPart = serverMessage.substring(15); // إزالة "ENC|"
+
+
+                    byte[] encryptedBalanceBytes = Base64.getDecoder().decode(encryptedPart);
+
+
+                    String decryptedBalance = RSAEncryptionUtil.decryptData(encryptedBalanceBytes, clientPrivateKey);
+
+                    System.out.println(decryptedBalance);
+                    String money = consoleReader.readLine();
+                    byte[] Encrptedmoney = RSAEncryptionUtil.encryptData(money.getBytes(), serverPublicKey);
+                    writer.println(java.util.Base64.getEncoder().encodeToString(Encrptedmoney));
+
+                }
             }
 
         } catch (IOException e) {

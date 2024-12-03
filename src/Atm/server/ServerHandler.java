@@ -62,6 +62,7 @@ public class ServerHandler implements Runnable {
             writer.println("To login with key, enter 3.");
             writer.println("To Get Your Balance enter 4.");
             writer.println("To Add amount enter 5.");
+            writer.println("To pull amount enter 6.");
 
             writer.println("Please enter your choice: ");
 
@@ -103,10 +104,16 @@ public class ServerHandler implements Runnable {
                 case 4:
                     RequestBalance requestBalance = new RequestBalance();
                     requestBalance.getBalance(writer, reader, GeneralclientPublicKey); // تمرير المفتاح العام للعميل
+                    break;
 
                 case 5:
                     AddMoney addMoney = new AddMoney();
                     addMoney.AddMoney(writer, reader, GeneralclientPublicKey,GeneralServerPrivateKey); // تمرير المفتاح العام للعميل
+
+                    break;
+                case 6:
+                    PullMoney pullMoney = new PullMoney();
+                    pullMoney.pullMoney(writer, reader, GeneralclientPublicKey,GeneralServerPrivateKey); // تمرير المفتاح العام للعميل
 
                     break;
 
