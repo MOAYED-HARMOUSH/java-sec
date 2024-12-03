@@ -110,4 +110,28 @@ public class UserDao {
         return -1; // إذا لم يتم العثور على المستخدم أو الرصيد
     }
 
+    public int AddBalance(int user_id,String newAmount) throws Exception {
+        String query = "UPDATE users SET encrypted_balance = ? WHERE user_id = ?";
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            byte[] encryptedBalance = AESEncryptionUtil.encrypt(newAmount);
+
+
+            statement.setBytes(1, encryptedBalance);
+            statement.setInt(2, user_id);
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                int encrypteBalance = rowsAffected;
+                // فك تشفير الرصيد
+                String decryptedBalance = AESEncryptionUtil.decrypt(encryptedBalance);
+                return Integer.parseInt(decryptedBalance); // تحويل النص إلى رقم
+            }
+        }
+        return -1; // إذا لم يتم العثور على المستخدم أو الرصيد
+    }
+
+
 }

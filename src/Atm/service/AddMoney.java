@@ -37,9 +37,15 @@ public class AddMoney {
             writer.println( "ENCForAddMoney|" +java.util.Base64.getEncoder().encodeToString(encryptedChoice));
 
             String encryptedAmountString = reader.readLine();
+
             byte[] encryptedAmount= Base64.getDecoder().decode(encryptedAmountString);
             String decryptedChoice = RSAEncryptionUtil.decryptData(encryptedAmount, serverPrivateKey);
-            System.out.println("Decrypted Amount: " + decryptedChoice);
+
+            System.out.println("Decrypted Amount: " +decryptedChoice );
+            int newBalance= balance+Integer.parseInt(decryptedChoice);
+            System.out.println("all Amount: " +newBalance );
+
+            int AddAmount = userDao.AddBalance(userId, String.valueOf(newBalance)); // حفظ النتيجة في متغير
 
 
 //

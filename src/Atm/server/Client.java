@@ -86,6 +86,7 @@ public class Client {
                 String decryptedBalance = RSAEncryptionUtil.decryptData(encryptedBalanceBytes, clientPrivateKey);
 
                 System.out.println(decryptedBalance);
+                break;
                 }
                 if (serverMessage.startsWith("ENCForAddMoney|")) {
                     String encryptedPart = serverMessage.substring(15); // إزالة "ENC|"

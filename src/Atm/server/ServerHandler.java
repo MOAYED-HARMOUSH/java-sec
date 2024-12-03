@@ -33,12 +33,12 @@ public class ServerHandler implements Runnable {
             PrivateKey serverPrivateKey = keys[0].getPrivateKey();
 
             String base64PublicKey = java.util.Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
-            String base64PrivateKey = java.util.Base64.getEncoder().encodeToString(serverPrivateKey.getEncoded());
-            String privateKeyString=base64PrivateKey;
-            if (privateKeyString.startsWith("-----BEGIN PUBLIC KEY-----")) {
-                privateKeyString = privateKeyString.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "");
-            }
-            GeneralServerPrivateKey = convertStringToPrivateKey(privateKeyString); // تحويل المفتاح من String إلى PublicKey
+          //  String base64PrivateKey = java.util.Base64.getEncoder().encodeToString(serverPrivateKey.getEncoded());
+         //   String privateKeyString=base64PrivateKey;
+//            if (privateKeyString.startsWith("-----BEGIN PRIVATE KEY-----")) {
+//                privateKeyString = privateKeyString.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "").replace("\n", "");
+//            }
+            GeneralServerPrivateKey = serverPrivateKey; // تحويل المفتاح من String إلى PublicKey
 
 
             String clientPublicKey = reader.readLine();

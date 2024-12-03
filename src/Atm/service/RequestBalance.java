@@ -34,10 +34,6 @@ public class RequestBalance {
 
             byte[] encryptedChoice = RSAEncryptionUtil.encryptData(message.getBytes(), clientPublicKey);
             writer.println( "ENC|" +java.util.Base64.getEncoder().encodeToString(encryptedChoice));
-//
-//            byte[] encryptedBalance = RSAEncryptionUtil.encryptData(message.getBytes(), clientPublicKey);
-//
-//            writer.println(Arrays.toString(encryptedBalance));
         } else {
             writer.println("Invalid session. Please log in first.");
         }
